@@ -1,0 +1,35 @@
+# Terraform state - may contain sensitive data
+**/*.tfstate
+**/*.tfstate.*
+**/.terraform/
+**/crash.log
+**/crash.*.log
+**/*.tfplan
+**/tfplan
+
+# Terraform variable files with potential secrets
+**/*.tfvars
+**/*.tfvars.json
+**/*.auto.tfvars
+**/*.auto.tfvars.json
+**/override.tf
+**/override.tf.json
+**/*_override.tf
+**/*_override.tf.json
+
+# Credentials and environment variables
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.aws/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# macOS
+.DS_Store
+
