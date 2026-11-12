@@ -1,0 +1,15 @@
+services:
+  inventory-service:
+    build: ./apps/inventory-service
+    ports:
+      - "8001:8000"
+
+  orders-api:
+    build: ./apps/orders-api
+    ports:
+      - "8000:8000"
+    environment:
+      INVENTORY_URL: http://inventory-service:8000
+    depends_on:
+      - inventory-service
+
