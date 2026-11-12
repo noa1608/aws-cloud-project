@@ -80,3 +80,45 @@ resource "aws_route_table_association" "public_b" {
   subnet_id      = aws_subnet.public_b.id
   route_table_id = aws_route_table.public.id
 }
+
+resource "aws_eip" "nat_a" {
+  domain = "vpc"
+
+  tags = {
+    Name = "devops-lab-nat-eip-a"
+  }
+}
+
+resource "aws_eip" "nat_b" {
+  domain = "vpc"
+
+  tags = {
+    Name = "devops-lab-nat-eip-b"
+  }
+}
+
+resource "aws_nat_gateway" "nat_a" {
+  allocation_id = aws_eip.nat_a.id
+  subnet_id     = aws_subnet.public_a.id
+
+  depends_on = [
+    aws_route_table_association.public_a
+  ]
+
+  tags = {
+    Name = "devops-lab-nat-a"
+  }
+}
+
+resource "aws_nat_gateway" "nat_b" {
+  allocation_id = aws_eip.nat_b.id
+  subnet_id     = aws_subnet.public_b.id
+
+  depends_on = [
+    aws_route_table_association.public_b
+  ]
+
+  tags = {
+    Name = "devops-lab-nat-b"
+  }
+}
