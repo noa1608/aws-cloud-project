@@ -10,7 +10,7 @@
       "Condition": {
         "StringEquals": {
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-          "token.actions.githubusercontent.com:sub": "repo:noa1608/aws-cloud-project:ref:refs/heads/feature/helm-charts"
+          "token.actions.githubusercontent.com:sub": "repo:noa1608@67430185/aws-cloud-project@1454262433:ref:refs/heads/feature/helm-charts"
         }
       }
     }

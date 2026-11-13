@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - feature/helm-charts
+    paths:
+      - 'apps/**'
+      - '**/Dockerfile'
+      - '.github/workflows/ci.yml'
 
 permissions:
   id-token: write
