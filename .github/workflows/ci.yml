@@ -4,7 +4,7 @@ name: CI - Build and Push to ECR
 on:
   push:
     branches:
-      - feature/helm-charts
+      - main
     paths:
       - 'apps/**'
       - '**/Dockerfile'
