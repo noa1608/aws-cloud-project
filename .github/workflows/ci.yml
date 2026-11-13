@@ -1,0 +1,72 @@
+
+name: CI - Build and Push to ECR
+
+on:
+  push:
+    branches:
+      - feature/helm-charts
+    paths:
+      - 'apps/**'
+      - '**/Dockerfile'
+      - '.github/workflows/ci.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Inspect OIDC claims
+        run: |
+          TOKEN=$(curl -sS \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" \
+            | jq -r '.value')
+
+          echo "$TOKEN" | jq -R '
+            split(".")[1]
+            | gsub("-"; "+")
+            | gsub("_"; "/")
+            | @base64d
+            | fromjson
+            | {iss, aud, sub}
+          '
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::084375543286:role/github-actions-ecr-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Orders API
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/orders-api
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/orders-api:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/orders-api:latest
+
+      - name: Build and Push Inventory Service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/inventory-service
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/inventory-service:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/inventory-service:latest
+

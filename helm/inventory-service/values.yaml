@@ -1,0 +1,13 @@
+replicaCount: 1
+
+image:
+  repository: 084375543286.dkr.ecr.us-east-1.amazonaws.com/inventory-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+containerPort: 8000
